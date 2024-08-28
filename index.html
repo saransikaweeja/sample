@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwritten Digit Recognizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        #imageUpload {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Digit Recognizer</h1>
+    <input type="file" id="imageUpload" accept="image/*">
+    <button onclick="uploadImage()">Predict</button>
+    <h2 id="result"></h2>
+
+    <script>
+        function uploadImage() {
+            const input = document.getElementById('imageUpload');
+            if (!input.files || !input.files[0]) {
+                alert("Please select an image file first.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', input.files[0]);
+
+            fetch('http://localhost:5000/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = `Predicted Digit: ${data.digit}`;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
