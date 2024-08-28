@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +8,36 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 400px;
+            text-align: center;
+        }
+
         h1 {
             color: #333;
+            margin-bottom: 30px;
         }
+
         #imageUpload {
             margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
         }
+
         button {
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -24,10 +46,13 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            width: 100%;
         }
+
         button:hover {
             background-color: #45a049;
         }
+
         #result {
             margin-top: 20px;
             font-size: 24px;
@@ -35,11 +60,14 @@
         }
     </style>
 </head>
+
 <body>
-    <h1>Digit Recognizer</h1>
-    <input type="file" id="imageUpload" accept="image/*">
-    <button onclick="uploadImage()">Predict</button>
-    <h2 id="result"></h2>
+    <div class="container">
+        <h1>Digit Recognizer</h1>
+        <input type="file" id="imageUpload" accept="image/*">
+        <button onclick="uploadImage()">Predict</button>
+        <h2 id="result"></h2>
+    </div>
 
     <script>
         function uploadImage() {
@@ -56,12 +84,14 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').innerText = `Predicted Digit: ${data.digit}`;
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerText = `Predicted Digit: ${data.digit}`;
+                })
+                .catch(error => console.error('Error:', error));
         }
     </script>
 </body>
+
 </html>
+
