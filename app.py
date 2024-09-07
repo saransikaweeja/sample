@@ -12,15 +12,17 @@ class FullyConnectedNN(torch.nn.Module):
     def __init__(self):
         super(FullyConnectedNN, self).__init__()
         # Define your layers here
-        self.fc1 = torch.nn.Linear(28*28, 128)
-        self.fc2 = torch.nn.Linear(128, 64)
-        self.fc3 = torch.nn.Linear(64, 10)
+        self.fc1 = torch.nn.Linear(28*28, 512)
+        self.fc2 = torch.nn.Linear(512, 256)
+        self.fc3 = torch.nn.Linear(256, 128)
+        self.fc4 = torch.nn.Linear(128, 10)
 
     def forward(self, x):
         x = torch.flatten(x, 1)  # Flatten the input
         x = torch.relu(self.fc1(x))
         x = torch.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = torch.relu(self.fc3(x))
+        x = self.fc4(x)
         return x
 
 # Load the model
@@ -28,7 +30,14 @@ def load_model():
     model = FullyConnectedNN()
     try:
         # Try to load the model's state_dict
-        model.load_state_dict(torch.load('fullyconnectedNN.pth', map_location=torch.device('cpu')))
+        state_dict = torch.load('fullyconnectedNN.pth', map_location=torch.device('cpu'))
+        print("State dict keys:", state_dict.keys())  # Print state dict keys for debugging
+
+        # Load the state_dict into the model
+        missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+        print("Missing keys:", missing_keys)
+        print("Unexpected keys:", unexpected_keys)
+
         model.eval()
         print("Model loaded successfully.")
     except RuntimeError as e:
@@ -41,10 +50,10 @@ model = load_model()
 
 # Define the image transformation
 transform = transforms.Compose([
-    transforms.Grayscale(num_output_channels=1),  # Convert to grayscale if not already
-    transforms.Resize((28, 28)),                  # Resize the image to 28x28
-    transforms.ToTensor(),                        # Convert to tensor
-    transforms.Normalize((0.1307,), (0.3081,))    # Normalize with mean and std used in MNIST
+    transforms.Grayscale(num_output_channels=1),  
+    transforms.Resize((28, 28)),                  
+    transforms.ToTensor(),                       
+    transforms.Normalize((0.1307,), (0.3081,))   
 ])
 
 @app.route('/predict', methods=['POST'])
